@@ -1,12 +1,20 @@
 import pandas as pd
 import numpy as np
+import streamlit as st
 import tensorflow as tf
 from transformers import AutoTokenizer, TFAutoModelForSequenceClassification
+import nltk
 # import scripts.channel_search as cs
 
-model_name = "cardiffnlp/twitter-roberta-base-sentiment"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = TFAutoModelForSequenceClassification.from_pretrained(model_name)
+@st.cache_resource
+def get_model():
+    model_name = "cardiffnlp/twitter-roberta-base-sentiment"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = TFAutoModelForSequenceClassification.from_pretrained(model_name)
+    nltk.download('punkt')
+    return model, tokenizer
+
+model, tokenizer = get_model()
 
 def making_weights(num):
     '''This function makes weights for each comment based on its like count (num)'''
